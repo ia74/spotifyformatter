@@ -347,7 +347,7 @@ const styles = `
 	height: 100%;
 	font-size: 1.5em;
 	font-weight: 600;
-	overflow:scroll;
+	overflow-y:scroll;
 }
 `
 document.head.insertAdjacentHTML('beforeend', `<style>${styles}</style>`);
