@@ -3,6 +3,8 @@ let spotifyFormatter = {
 	newClasses: {
 		lyricContainerUnsupported: 'sf-lcu'
 	},
+	proxy: 'http://localhost:8080/',
+	desktop: window.location.href.includes('xpui.app'),
 	finds: {
 		mainView: 'main',
 		fullscreen: {
@@ -70,7 +72,7 @@ let spotifyFormatter = {
 		} else {
 			console.log("garb")
 			// tahsts the proper way of doing that.. i think..
-			const token = await fetch("https://open.spotify.com/get_access_token");
+			const token = await fetch((spotifyFormatter.desktop ? spotifyFormatter.proxy : '') + "https://open.spotify.com/get_access_token");
 			const data = await token.json();
 			spotifyFormatter.cache = { token: data.accessToken, expiry: data.accessTokenExpirationTimestampMs, checked: Date.now() };
 			// yes there is and i implemented the edge case explosion 4 seconds ago
@@ -83,7 +85,7 @@ let spotifyFormatter = {
 		var item;
 		while (!validSearch) {
 			if (offsetC >= 5) return "max attempts";
-			const urlSpotify = `https://api.spotify.com/v1/search/?q=track:${encodeURIComponent(title)} artist:${encodeURIComponent(artist)}&type=track&market=from_token&limit=1&offset=${offsetC}`;
+			const urlSpotify = (spotifyFormatter.desktop ? spotifyFormatter.proxy : '') + `https://api.spotify.com/v1/search/?q=track:${encodeURIComponent(title)} artist:${encodeURIComponent(artist)}&type=track&market=from_token&limit=1&offset=${offsetC}`;
 			try {
 				const res = await fetch(urlSpotify, {
 					headers: {
