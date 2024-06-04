@@ -6,16 +6,30 @@ const zip = require('adm-zip');
 
 const injectHost = fs.readFileSync('inject.html', 'utf8');
 
-const Zip = new zip(target);
+const { exec } = require('child_process');
 
-const targetSpaFile = Zip.getEntry('index.html');
+exec('taskkill /F /IM spotify.exe', (error, stdout, stderr) => {
+    if (error && error.message.includes('not found')) {
+		console.log('Spotify not open! Still continuing')
+	}
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+	console.log('Probably killed Spotify.')
+	inject();
+});
 
-const targetSpa = Zip.readAsText(targetSpaFile);
+function inject() {
+	const Zip = new zip(target);
 
-const inject = targetSpa.replace(/<\/body><\/html>/, injectHost); // injectHost has the closing tags
+	const targetSpaFile = Zip.getEntry('index.html');
 
-Zip.updateFile('index.html', inject);
+	const targetSpa = Zip.readAsText(targetSpaFile);
 
-Zip.writeZip(target);
+	const inject = targetSpa.replace(/<\/body><\/html>/, injectHost); // injectHost has the closing tags
 
-console.log('Injected loader into Spotify.');
+	Zip.updateFile('index.html', inject);
+
+	Zip.writeZip(target);
+
+	console.log('Injected loader into Spotify.');
+}
