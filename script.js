@@ -3,7 +3,7 @@ let spotifyFormatter = {
 	newClasses: {
 		lyricContainerUnsupported: 'sf-lcu'
 	},
-	proxy: 'http://localhost:8080/',
+	proxy: 'http://localhost:7799/?url=',
 	desktop: window.location.href.includes('xpui.app'),
 	finds: {
 		mainView: 'main',
