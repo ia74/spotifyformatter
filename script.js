@@ -368,6 +368,11 @@ const styles = `
 	overflow-y:scroll;
 }
 `
+
+document.body.addEventListener('DOMContentLoaded', () => {
+	if(spotifyFormatter.desktop) alert('SpotifyFormatter v' + spotifyFormatter.version + ' is running in desktop mode.')
+});
+
 document.head.insertAdjacentHTML('beforeend', `<style>${styles}</style>`);
 
 spotifyFormatter.forceCreateLyricButton();
