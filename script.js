@@ -72,17 +72,17 @@ let spotifyFormatter = {
 		} else {
 			console.log("garb")
 			// tahsts the proper way of doing that.. i think..
-			let token, data;
+			let token, data = { accessToken: 'NONE', accessTokenExpirationTimestampMs: 0 };
 			try {
 				token = await fetch((spotifyFormatter.desktop ? spotifyFormatter.proxy : '') + "https://open.spotify.com/get_access_token")
 				.catch(err => { console.error(err); });
-				data = await token.json().catch(err => { console.error(err); 
-					data = { accessToken: null, accessTokenExpirationTimestampMs: 0 };
+				data = await token.json().catch(err => { 
+					data = { accessToken: 'NONE', accessTokenExpirationTimestampMs: 0 };
 				});
+				spotifyFormatter.cache = { token: data.accessToken, expiry: data.accessTokenExpirationTimestampMs, checked: Date.now() };
 			} catch(er) {
-				data = { accessToken: null, accessTokenExpirationTimestampMs: 0 };
+				data = { accessToken: 'NONE', accessTokenExpirationTimestampMs: 0 };
 			}
-			spotifyFormatter.cache = { token: data.accessToken, expiry: data.accessTokenExpirationTimestampMs, checked: Date.now() };
 			// yes there is and i implemented the edge case explosion 4 seconds ago
 			return spotifyFormatter.cache;
 		}
