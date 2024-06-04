@@ -353,15 +353,44 @@ const styles = `
 document.head.insertAdjacentHTML('beforeend', `<style>${styles}</style>`);
 
 spotifyFormatter.forceCreateLyricButton();
+waitForElement(spotifyFormatter.finds.buttons.fullScreen,(element) => { // fullscreen logic
+	element.addEventListener('click',(ev) => { 
+		console.log("clicky clacky");
+		waitForElement('.npv-track__name', (element) => {
+			spotifyFormatter.runLyrics('fullscreen')//initial setup
+			const trackChangeF = new MutationObserver(entries => {
+				spotifyFormatter.runLyrics('fullscreen'); //recurring lyrics
+			});
+			trackChangeF.observe(document.querySelector('.npv-track__name'), {
+				subtree: true,
+				characterData: true
+			});
+			const closeFullscreen = new MutationObserver(entries => { //add lyrics to windowed mode if fullscreen mode is exited
+				if(document.querySelector(".spotifyinternal-artistnpv")===null) {
+					spotifyFormatter.runLyrics();
+					closeFullscreen.disconnect();
+				}
+			});
+			closeFullscreen.observe(document.querySelector("body"), { //could've been more efficient but the fullscreen stuff is on the body directly
+			  childList: true,
+			  subtree: true
+			});
+		});
+	});
+});
+
+waitForElement('button[aria-label="Upgrade to Premium"]',(element)=> { // hide premium button
+	element.innerText = 'SpotifyFormatter v' + spotifyFormatter.version;
+});
 
 waitForElement(spotifyFormatter.finds.buttons.mainLyrics, (element) => {
 	element.addEventListener('click', () => {
+		spotifyFormatter.runLyrics();
 		waitForElement(spotifyFormatter.finds.normal.enjoyLyricsOnSpotifyPremium, (element) => {
 			element.style.display = "none";
 			document.querySelector(spotifyFormatter.finds.normal.lyricFadeToBlack).style.display = "none";
 			document.querySelector(spotifyFormatter.finds.normal.otherFader).style.cssText = document.querySelector(spotifyFormatter.finds.normal.otherFader).style.cssText.replace('--show-gradient-over-lyrics: block;', '--show-gradient-over-lyrics: none;');
 		});		
-		spotifyFormatter.runLyrics();
 		const trackChangeW = new MutationObserver(entries => {
 			if(document.querySelector(".spotifyinternal-artistnpv")===null){ //if in fullscreen, dont add lyrics to windowed mode
 				spotifyFormatter.runLyrics();				//recurring lyrics
