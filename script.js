@@ -331,6 +331,10 @@ let spotifyFormatter = {
 		}
 	},
 	forceCreateLyricButton: () => {
+		waitForElement(spotifyFormatter.finds.buttons.mainLyrics, (element) => {
+			element.click();
+			element.click();
+		});
 	}
 }
 
@@ -394,7 +398,7 @@ const styles = `
 }
 `
 
-document.body.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
 	if (spotifyFormatter.desktop) alert('SpotifyFormatter v' + spotifyFormatter.version + ' is running in desktop mode.')
 });
 
