@@ -23,8 +23,12 @@ function inject() {
 
 	const targetSpaFile = Zip.getEntry('index.html');
 
-	const targetSpa = Zip.readAsText(targetSpaFile);
-
+	let targetSpa = Zip.readAsText(targetSpaFile);
+	if(targetSpa.includes('<!--DIJS')) {
+		const match = targetSpa.split('.v')[1].split('spa')[0];
+		targetSpa = targetSpa.replace(/<!--DIJS.*?DIJE-->/s, injectHost);
+		console.log('Removing old loader (' + match+')');
+	}
 	const inject = targetSpa.replace(/<\/body><\/html>/, injectHost); // injectHost has the closing tags
 
 	Zip.updateFile('index.html', inject);
