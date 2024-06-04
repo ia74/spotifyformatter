@@ -406,41 +406,30 @@ waitForElement('button[aria-label="Upgrade to Premium"]',(element)=> { // hide p
 	element.innerText = 'SpotifyFormatter v' + spotifyFormatter.version;
 });
 
-waitForElement('div.deomraqfhIAoSB3SgXpu',(element) => { // fullscreen logic
-	document.querySelector('button[aria-label="Full screen"]').addEventListener('click',(ev) => { 
-		console.log("clicky clacky");
-		waitForElement('.npv-track__name', (element) => {
-			spotifyFormatter.runLyrics('fullscreen'); //initial setup
-			const trackChangeF = new MutationObserver(entries => {
-				spotifyFormatter.runLyrics('fullscreen'); //recurring lyrics
-			});
-			trackChangeF.observe(document.querySelector('.npv-track__name'), {
-				subtree: true,
-				characterData: true
-			});
-			const closeFullscreen = new MutationObserver(entries => { //add lyrics to windowed mode if fullscreen mode is exited
-				if(document.querySelector(".spotifyinternal-artistnpv")===null) {
-					spotifyFormatter.runLyrics();
-					closeFullscreen.disconnect();
-				}
-			});
-			closeFullscreen.observe(document.querySelector("body"), { //could've been more efficient but the fullscreen stuff is on the body directly
-			  childList: true,
-			  subtree: true
-			});
-		});
-	});
-});
-//needs fixing but kinda works
-waitForElement('button[aria-label="Full screen"]', (element) => {
-    element.addEventListener('click', (ev) => {
-        waitForElement('button[data-testid="fullscreen-mode-overlay-lyrics-button"]', (element) => {
-			element.addEventListener('click', (ev) => {
-				waitForElement(".npv-track-metadata__name",(element)=> {
-					spotifyFormatter.runLyrics('fullscreen');
-				});
-			});
-        });
+waitForElement('button[aria-label="Full screen"]', (fullscreenButton) => {
+    fullscreenButton.addEventListener('click', (ev) => {
+        const addLyricsButtonListener = () => {
+            waitForElement('button[data-testid="fullscreen-mode-overlay-lyrics-button"]', (lyricsButton) => {
+                const handleLyricsButtonClick = () => {
+                    waitForElement(".npv-track-metadata__name", () => {
+                        spotifyFormatter.runLyrics('fullscreen');
+                    });
+                };
+                lyricsButton.addEventListener('click', handleLyricsButtonClick);
+                const lyricsButtonObserver = new MutationObserver((mutations, obs) => {
+                    if (!document.contains(lyricsButton)) {
+                        obs.disconnect();
+                        console.log("lyrics button removed; reattaching");
+                        addLyricsButtonListener();
+                    }
+                });
+                lyricsButtonObserver.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            });
+        };
+        addLyricsButtonListener();
     });
 });
 waitForElement(spotifyFormatter.finds.buttons.mainLyrics, (element) => {
