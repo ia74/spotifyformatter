@@ -431,7 +431,18 @@ waitForElement('div.deomraqfhIAoSB3SgXpu',(element) => { // fullscreen logic
 		});
 	});
 });
-
+//needs fixing but kinda works
+waitForElement('button[aria-label="Full screen"]', (element) => {
+    element.addEventListener('click', (ev) => {
+        waitForElement('button[data-testid="fullscreen-mode-overlay-lyrics-button"]', (element) => {
+			element.addEventListener('click', (ev) => {
+				waitForElement(".npv-track-metadata__name",(element)=> {
+					spotifyFormatter.runLyrics('fullscreen');
+				});
+			});
+        });
+    });
+});
 waitForElement(spotifyFormatter.finds.buttons.mainLyrics, (element) => {
 	element.addEventListener('click', () => {
 		spotifyFormatter.runLyrics();
