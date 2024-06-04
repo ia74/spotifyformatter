@@ -75,12 +75,12 @@ let spotifyFormatter = {
 			let token, data = { accessToken: 'NONE', accessTokenExpirationTimestampMs: 0 };
 			try {
 				token = await fetch((spotifyFormatter.desktop ? spotifyFormatter.proxy : '') + "https://open.spotify.com/get_access_token")
-				.catch(err => { console.error(err); });
-				data = await token.json().catch(err => { 
+					.catch(err => { console.error(err); });
+				data = await token.json().catch(err => {
 					data = { accessToken: 'NONE', accessTokenExpirationTimestampMs: 0 };
 				});
 				spotifyFormatter.cache = { token: data.accessToken, expiry: data.accessTokenExpirationTimestampMs, checked: Date.now() };
-			} catch(er) {
+			} catch (er) {
 				data = { accessToken: 'NONE', accessTokenExpirationTimestampMs: 0 };
 			}
 			// yes there is and i implemented the edge case explosion 4 seconds ago
@@ -138,7 +138,7 @@ let spotifyFormatter = {
 						document.querySelector(spotifyFormatter.finds[mode].albumArt),
 						token
 					);
-				} catch(er) {
+				} catch (er) {
 					details = {
 						album: "Unknown",
 						durationMs: 0
@@ -168,12 +168,12 @@ let spotifyFormatter = {
 				// let correctContainer = document.querySelector(spotifyFormatter.finds[mode].lyrics.container);
 				// if(!document.querySelector(spotifyFormatter.finds[mode].enjoyLyricsOnSpotifyPremium))
 				// 	correctContainer = document.querySelector(spotifyFormatter.finds[mode].lyrics.unsupportedcontainer);
-				if(document.querySelector(spotifyFormatter.finds[mode].lyrics.container)) document.querySelector(spotifyFormatter.finds[mode].lyrics.container).style.display = 'none';
-				if(document.querySelector('#lyrics-container')) document.querySelector('#lyrics-container').remove();
-				if(mode == 'fullscreen') document.querySelector(spotifyFormatter.finds[mode].lyrics.container).remove();
+				if (document.querySelector(spotifyFormatter.finds[mode].lyrics.container)) document.querySelector(spotifyFormatter.finds[mode].lyrics.container).style.display = 'none';
+				if (document.querySelector('#lyrics-container')) document.querySelector('#lyrics-container').remove();
+				if (mode == 'fullscreen') document.querySelector(spotifyFormatter.finds[mode].lyrics.container).remove();
 				let viewContainer = document.createElement('div');
 				viewContainer.id = 'lyrics-container';
-				if(mode == 'fullscreen') {
+				if (mode == 'fullscreen') {
 					spotifyFormatter.finds[mode].lyrics.remove.forEach((selector) => {
 						document.querySelector(selector).remove();
 					});
@@ -204,11 +204,11 @@ let spotifyFormatter = {
 	async fallbackSearch(track, artist) {
 		return new Promise((res, rej) => {
 			fetch(`https://lrclib.net/api/search?track_name=${encodeURIComponent(track)}&artist_name=${encodeURIComponent(artist)}`)
-			.then(res => res.json())
-			.then(data =>{
-				console.log(data)
-				res(data[0].syncedLyrics || data[0].plainLyrics);
-			});
+				.then(res => res.json())
+				.then(data => {
+					console.log(data)
+					res(data[0].syncedLyrics || data[0].plainLyrics);
+				});
 		})
 	},
 	parseLyrics: (lyrics, trackTitle) => {
@@ -237,7 +237,7 @@ let spotifyFormatter = {
 		})
 		console.log('Populated lyrics container');
 	},
-	update: (time, currentLyrics, mode = 'normal', supportsLyricsNative=true) => {
+	update: (time, currentLyrics, mode = 'normal', supportsLyricsNative = true) => {
 		// it cant be like exactly 1000 removed i think becuase what if we dont hit it at the exact time
 		console.log(time, currentLyrics)
 		const currentLyric = currentLyrics.find(lyric => lyric.start <= time && lyric.start + spotifyFormatter.lyricsMaxTime >= time);
@@ -264,7 +264,7 @@ let spotifyFormatter = {
 	lyricsMaxTime: 1000,
 	timeUpdateRate: 250,
 	runLyrics(mode = 'normal') {
-		if(!document.querySelector(spotifyFormatter.finds.mainView + ' > ' + spotifyFormatter.finds[mode].lyrics.unsupportedcontainer)) {
+		if (!document.querySelector(spotifyFormatter.finds.mainView + ' > ' + spotifyFormatter.finds[mode].lyrics.unsupportedcontainer)) {
 			const lyricContainer = document.createElement('div');
 			lyricContainer.classList.add(spotifyFormatter.finds[mode].lyrics.unsupportedcontainer.split('.')[1]);
 			document.querySelector(spotifyFormatter.finds.mainView).parentElement.appendChild(lyricContainer);
@@ -272,7 +272,7 @@ let spotifyFormatter = {
 		let spotEn = document.querySelector(spotifyFormatter.finds[mode].enjoyLyricsOnSpotifyPremium);
 		if (document.querySelector(spotifyFormatter.finds[mode].lyricFadeToBlack)) document.querySelector(spotifyFormatter.finds[mode].lyricFadeToBlack).style.display = "none";
 		if (mode == 'normal') {
-			if(spotEn) {
+			if (spotEn) {
 				document.querySelector(spotifyFormatter.finds[mode].enjoyLyricsOnSpotifyPremium).style.display = "none";
 				document.querySelector(spotifyFormatter.finds[mode].otherFader).style.cssText = document.querySelector(spotifyFormatter.finds[mode].otherFader).style.cssText.replace('--show-gradient-over-lyrics: block;', '--show-gradient-over-lyrics: none;');
 			} else {
@@ -286,13 +286,13 @@ let spotifyFormatter = {
 		const time = spotifyFormatter.convertTimestampToMs(document.querySelector(spotifyFormatter.finds[mode].songPlaying).textContent);
 		spotifyFormatter._global.songPlayingTime = time;
 		const timeInterval = setInterval(() => {
-			if(!document.querySelector(spotifyFormatter.finds.buttons.playPause).getAttribute('aria-label').includes('Play'))
+			if (!document.querySelector(spotifyFormatter.finds.buttons.playPause).getAttribute('aria-label').includes('Play'))
 				spotifyFormatter._global.songPlayingTime += spotifyFormatter.timeUpdateRate;
 		}, spotifyFormatter.timeUpdateRate);
 		const pbt = setInterval(() => {
-			if(document.querySelector(spotifyFormatter.finds[mode].progressBar))
-			spotifyFormatter._global.songPlayingTime =	parseInt( document.querySelector(spotifyFormatter.finds[mode].progressBar).getAttribute('data-test-position'))
-		},1000);
+			if (document.querySelector(spotifyFormatter.finds[mode].progressBar))
+				spotifyFormatter._global.songPlayingTime = parseInt(document.querySelector(spotifyFormatter.finds[mode].progressBar).getAttribute('data-test-position'))
+		}, 1000);
 		spotifyFormatter._global.playbackTimer = pbt;
 		spotifyFormatter._global.timeInterval = timeInterval;
 		spotifyFormatter.getLyricsForMode(mode).then((currentLyrics) => {
@@ -314,7 +314,7 @@ let spotifyFormatter = {
 		timeInterval: null
 	},
 	createListeners: (mode = 'normal') => {
-		switch(mode) {
+		switch (mode) {
 			case 'normal':
 				document.querySelector(spotifyFormatter.finds[mode].trackTitle).addEventListener('change', () => {
 					spotifyFormatter.runLyrics(mode);
@@ -335,6 +335,31 @@ let spotifyFormatter = {
 }
 
 const styles = `
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	background-color: rgba(0,0,0,0.4);
+	width: 100%;
+	height: 100%;
+}
+.modal-content {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #333;
+	color: white;
+	padding: 20px;
+	border-radius: 10px;
+}
+.close {
+	color: white;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	cursor: pointer;
+}
 :root {
 	--lyrics-color-inactive: #b3b3b3;
 	--lyrics-color-active: #1db954;
@@ -370,14 +395,14 @@ const styles = `
 `
 
 document.body.addEventListener('DOMContentLoaded', () => {
-	if(spotifyFormatter.desktop) alert('SpotifyFormatter v' + spotifyFormatter.version + ' is running in desktop mode.')
+	if (spotifyFormatter.desktop) alert('SpotifyFormatter v' + spotifyFormatter.version + ' is running in desktop mode.')
 });
 
 document.head.insertAdjacentHTML('beforeend', `<style>${styles}</style>`);
 
 spotifyFormatter.forceCreateLyricButton();
-waitForElement(spotifyFormatter.finds.buttons.fullScreen,(element) => { // fullscreen logic
-	element.addEventListener('click',(ev) => { 
+waitForElement(spotifyFormatter.finds.buttons.fullScreen, (element) => { // fullscreen logic
+	element.addEventListener('click', (ev) => {
 		console.log("clicky clacky");
 		waitForElement('.npv-track__name', (element) => {
 			spotifyFormatter.runLyrics('fullscreen')//initial setup
@@ -389,48 +414,78 @@ waitForElement(spotifyFormatter.finds.buttons.fullScreen,(element) => { // fulls
 				characterData: true
 			});
 			const closeFullscreen = new MutationObserver(entries => { //add lyrics to windowed mode if fullscreen mode is exited
-				if(document.querySelector(".spotifyinternal-artistnpv")===null) {
+				if (document.querySelector(".spotifyinternal-artistnpv") === null) {
 					spotifyFormatter.runLyrics();
 					closeFullscreen.disconnect();
 				}
 			});
 			closeFullscreen.observe(document.querySelector("body"), { //could've been more efficient but the fullscreen stuff is on the body directly
-			  childList: true,
-			  subtree: true
+				childList: true,
+				subtree: true
 			});
 		});
 	});
 });
 
-waitForElement('button[aria-label="Upgrade to Premium"]',(element)=> { // hide premium button
+const mkModal = (title, content) => {
+	const modal = document.createElement('div');
+	modal.classList.add('modal');
+	const contentPara = document.createElement('p');
+	contentPara.innerHTML = content;
+	modal.innerHTML = `<div class="modal-content"><span class="close">&times;</span><h2>${title}</h2></div>`;
+	modal.querySelector('.modal-content').appendChild(contentPara);
+	document.body.appendChild(modal)
+	modal.style.display = 'none';
+	document.querySelector('.close').addEventListener('click', () => {
+		modal.style.display = 'none';
+	})
+	return { modal, content: contentPara };
+};
+
+document.addEventListener('keydown', (ev) => {
+	if (ev.key == 'd' && ev.ctrlKey) {
+		console.log('Developer mode enabled');
+		const authStatus = spotifyFormatter.cache.token === null ? 'No auth token found, defaulting to search API' : 'Auth token found.';
+		spotifyFormatterIfo.content.innerHTML = base +  '<br/><br/><hr/>Developer mode enabled. Press <kbd>CTRL+D</kbd> to refresh.<br/>Platform: ' + (spotifyFormatter.desktop ? 'desktop' : 'web') + '<br/>Song playing time: ' + spotifyFormatter._global.songPlayingTime + 'ms.<br/>' + 'Playback timer: ' + spotifyFormatter._global.playbackTimer + '<br/>Sync timer: ' + spotifyFormatter._global.syncTimer + '<br/>Time interval: ' + spotifyFormatter._global.timeInterval + '<br/><hr/><br/>Current lyrics len:<br/>' + JSON.parse(localStorage.getItem('lyrics')).length + '<br/>Cache:<br/>' + JSON.stringify(spotifyFormatter.cache, null, 2) + '<br/>' + authStatus;
+	}
+});
+
+const base = `SpotifyFormatter v${spotifyFormatter.version} is running. This extension adds lyrics back to Spotify. Enjoy!<br/><hr/>Made by <a href="https://github.com/ia74" target="_blank">ia74</a> and <a href="https://github.com/slimefactory3" target="_blank">SlimeFactory3</a><hr/><br/><a href="https://github.com/ia74/spotifyformatter" target="_blank">GitHub repository</a>`;
+const spotifyFormatterIfo = mkModal('SpotifyFormatter', base);
+
+waitForElement('button[aria-label="Upgrade to Premium"]', (element) => { // hide premium button
 	element.innerText = 'SpotifyFormatter v' + spotifyFormatter.version;
+	element.onclick = (e) => {
+		spotifyFormatterIfo.modal.style.display = 'block';
+		e.stopPropagation();
+	}
 });
 
 waitForElement('button[aria-label="Full screen"]', (fullscreenButton) => {
-    fullscreenButton.addEventListener('click', (ev) => {
-        const addLyricsButtonListener = () => {
-            waitForElement('button[data-testid="fullscreen-mode-overlay-lyrics-button"]', (lyricsButton) => {
-                const handleLyricsButtonClick = () => {
-                    waitForElement(".npv-track-metadata__name", () => {
-                        spotifyFormatter.runLyrics('fullscreen');
-                    });
-                };
-                lyricsButton.addEventListener('click', handleLyricsButtonClick);
-                const lyricsButtonObserver = new MutationObserver((mutations, obs) => {
-                    if (!document.contains(lyricsButton)) {
-                        obs.disconnect();
-                        console.log("lyrics button removed; reattaching");
-                        addLyricsButtonListener();
-                    }
-                });
-                lyricsButtonObserver.observe(document.body, {
-                    childList: true,
-                    subtree: true
-                });
-            });
-        };
-        addLyricsButtonListener();
-    });
+	fullscreenButton.addEventListener('click', (ev) => {
+		const addLyricsButtonListener = () => {
+			waitForElement('button[data-testid="fullscreen-mode-overlay-lyrics-button"]', (lyricsButton) => {
+				const handleLyricsButtonClick = () => {
+					waitForElement(".npv-track-metadata__name", () => {
+						spotifyFormatter.runLyrics('fullscreen');
+					});
+				};
+				lyricsButton.addEventListener('click', handleLyricsButtonClick);
+				const lyricsButtonObserver = new MutationObserver((mutations, obs) => {
+					if (!document.contains(lyricsButton)) {
+						obs.disconnect();
+						console.log("lyrics button removed; reattaching");
+						addLyricsButtonListener();
+					}
+				});
+				lyricsButtonObserver.observe(document.body, {
+					childList: true,
+					subtree: true
+				});
+			});
+		};
+		addLyricsButtonListener();
+	});
 });
 waitForElement(spotifyFormatter.finds.buttons.mainLyrics, (element) => {
 	element.addEventListener('click', () => {
@@ -439,9 +494,9 @@ waitForElement(spotifyFormatter.finds.buttons.mainLyrics, (element) => {
 			element.style.display = "none";
 			document.querySelector(spotifyFormatter.finds.normal.lyricFadeToBlack).style.display = "none";
 			document.querySelector(spotifyFormatter.finds.normal.otherFader).style.cssText = document.querySelector(spotifyFormatter.finds.normal.otherFader).style.cssText.replace('--show-gradient-over-lyrics: block;', '--show-gradient-over-lyrics: none;');
-		});		
+		});
 		const trackChangeW = new MutationObserver(entries => {
-			if(document.querySelector(".spotifyinternal-artistnpv")===null){ //if in fullscreen, dont add lyrics to windowed mode
+			if (document.querySelector(".spotifyinternal-artistnpv") === null) { //if in fullscreen, dont add lyrics to windowed mode
 				spotifyFormatter.runLyrics();				//recurring lyrics
 			}
 		});
@@ -453,33 +508,33 @@ waitForElement(spotifyFormatter.finds.buttons.mainLyrics, (element) => {
 })
 console.log("SpotifyFormatter running");
 function waitForElement(selector, callback) {
-    const observer = new MutationObserver((mutations, obs) => {
-        const element = document.querySelector(selector);
-        if (element) {
-            callback(element);
-            obs.disconnect(); // Stop observing after the element is found
-        }
-    });
+	const observer = new MutationObserver((mutations, obs) => {
+		const element = document.querySelector(selector);
+		if (element) {
+			callback(element);
+			obs.disconnect(); // Stop observing after the element is found
+		}
+	});
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true
+	});
 }
 
 async function querySelectorAsync(selector) {
-    return new Promise((resolve) => {
-        const observer = new MutationObserver((mutations, obs) => {
-            const element = document.querySelector(selector);
-            if (element) {
-                resolve(element);
-                obs.disconnect(); // Stop observing after the element is found
-            }
-        });
+	return new Promise((resolve) => {
+		const observer = new MutationObserver((mutations, obs) => {
+			const element = document.querySelector(selector);
+			if (element) {
+				resolve(element);
+				obs.disconnect(); // Stop observing after the element is found
+			}
+		});
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true
+		});
+	});
 }
