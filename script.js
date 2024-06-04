@@ -252,7 +252,7 @@ let spotifyFormatter = {
 			document.querySelector(spotifyFormatter.finds.mainView).parentElement.appendChild(lyricContainer);
 		}
 		let spotEn = document.querySelector(spotifyFormatter.finds[mode].enjoyLyricsOnSpotifyPremium);
-		document.querySelector(spotifyFormatter.finds[mode].lyricFadeToBlack).style.display = "none";
+		if (document.querySelector(spotifyFormatter.finds[mode].lyricFadeToBlack)) document.querySelector(spotifyFormatter.finds[mode].lyricFadeToBlack).style.display = "none";
 		if (mode == 'normal') {
 			if(spotEn) {
 				document.querySelector(spotifyFormatter.finds[mode].enjoyLyricsOnSpotifyPremium).style.display = "none";
