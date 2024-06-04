@@ -446,6 +446,9 @@ document.addEventListener('keydown', (ev) => {
 	if (ev.key == 'd' && ev.ctrlKey) {
 		console.log('Developer mode enabled');
 		const authStatus = spotifyFormatter.cache.token === null ? 'No auth token found, defaulting to search API' : 'Auth token found.';
+		let fmt = spotifyFormatter.cache;
+		if(fmt.token == null) fmt.token = 'NONE';
+		else fmt.token = 'REDACTED (len: ' + fmt.token.length + ')';
 		spotifyFormatterIfo.content.innerHTML = base +  '<br/><br/><hr/>Developer mode enabled. Press <kbd>CTRL+D</kbd> to refresh.<br/>Platform: ' + (spotifyFormatter.desktop ? 'desktop' : 'web') + '<br/>Song playing time: ' + spotifyFormatter._global.songPlayingTime + 'ms.<br/>' + 'Playback timer: ' + spotifyFormatter._global.playbackTimer + '<br/>Sync timer: ' + spotifyFormatter._global.syncTimer + '<br/>Time interval: ' + spotifyFormatter._global.timeInterval + '<br/><hr/><br/>Current lyrics len:<br/>' + JSON.parse(localStorage.getItem('lyrics')).length + '<br/>Cache:<br/>' + JSON.stringify(spotifyFormatter.cache, null, 2) + '<br/>' + authStatus;
 	}
 });
