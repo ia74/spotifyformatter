@@ -1,10 +1,13 @@
 const fastify = require('fastify')({ logger: true })
+const fs = require('fs').readFileSync('../script.js', 'utf8')
 
 fastify.get('/sfinjector.js', (request, reply) => {
-	  reply.sendFile('script.js')
+	  reply.send(fs);
 });
 
-fastify.get('/')
+fastify.get('/', (request, reply) => {
+	  reply.send('injecthost')
+});
 
 fastify.listen(7799).then(() => {
 	  console.log('InjectHost running on port 7799')

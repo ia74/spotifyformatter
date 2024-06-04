@@ -72,8 +72,16 @@ let spotifyFormatter = {
 		} else {
 			console.log("garb")
 			// tahsts the proper way of doing that.. i think..
-			const token = await fetch((spotifyFormatter.desktop ? spotifyFormatter.proxy : '') + "https://open.spotify.com/get_access_token");
-			const data = await token.json();
+			let token, data;
+			try {
+				token = await fetch((spotifyFormatter.desktop ? spotifyFormatter.proxy : '') + "https://open.spotify.com/get_access_token")
+				.catch(err => { console.error(err); });
+				data = await token.json().catch(err => { console.error(err); 
+					data = { accessToken: null, accessTokenExpirationTimestampMs: 0 };
+				});
+			} catch(er) {
+				data = { accessToken: null, accessTokenExpirationTimestampMs: 0 };
+			}
 			spotifyFormatter.cache = { token: data.accessToken, expiry: data.accessTokenExpirationTimestampMs, checked: Date.now() };
 			// yes there is and i implemented the edge case explosion 4 seconds ago
 			return spotifyFormatter.cache;
@@ -122,12 +130,20 @@ let spotifyFormatter = {
 			const trackTitle = document.querySelector(spotifyFormatter.finds[mode].trackTitle).textContent;
 			const artistName = document.querySelector(spotifyFormatter.finds[mode].artistName).textContent;
 			spotifyFormatter.token().then(async (token) => {
-				const details = await spotifyFormatter.getSongDetails(
-					trackTitle,
-					artistName,
-					document.querySelector(spotifyFormatter.finds[mode].albumArt),
-					token
-				);
+				let details;
+				try {
+					details = await spotifyFormatter.getSongDetails(
+						trackTitle,
+						artistName,
+						document.querySelector(spotifyFormatter.finds[mode].albumArt),
+						token
+					);
+				} catch(er) {
+					details = {
+						album: "Unknown",
+						durationMs: 0
+					}
+				}
 				let lyrics = '';
 				try {
 					const title = details.album;
