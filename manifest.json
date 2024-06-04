@@ -1,0 +1,12 @@
+{
+	"manifest_version": 3,
+	"name": "SpotifyFormatter",
+	"version": "1.0",
+	"description": "Reformats the Spotify website to a more usable website.",
+	"content_scripts": [
+	  {
+		"matches": ["https://open.spotify.com/*"],
+		"js": ["script.js"]
+	  }
+	]
+  }
