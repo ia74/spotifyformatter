@@ -383,6 +383,32 @@ waitForElement('button[aria-label="Upgrade to Premium"]',(element)=> { // hide p
 	element.innerText = 'SpotifyFormatter v' + spotifyFormatter.version;
 });
 
+waitForElement('div.deomraqfhIAoSB3SgXpu',(element) => { // fullscreen logic
+	document.querySelector('button[aria-label="Full screen"]').addEventListener('click',(ev) => { 
+		console.log("clicky clacky");
+		waitForElement('.npv-track__name', (element) => {
+			spotifyFormatter.runLyrics('fullscreen'); //initial setup
+			const trackChangeF = new MutationObserver(entries => {
+				spotifyFormatter.runLyrics('fullscreen'); //recurring lyrics
+			});
+			trackChangeF.observe(document.querySelector('.npv-track__name'), {
+				subtree: true,
+				characterData: true
+			});
+			const closeFullscreen = new MutationObserver(entries => { //add lyrics to windowed mode if fullscreen mode is exited
+				if(document.querySelector(".spotifyinternal-artistnpv")===null) {
+					spotifyFormatter.runLyrics();
+					closeFullscreen.disconnect();
+				}
+			});
+			closeFullscreen.observe(document.querySelector("body"), { //could've been more efficient but the fullscreen stuff is on the body directly
+			  childList: true,
+			  subtree: true
+			});
+		});
+	});
+});
+
 waitForElement(spotifyFormatter.finds.buttons.mainLyrics, (element) => {
 	element.addEventListener('click', () => {
 		spotifyFormatter.runLyrics();
