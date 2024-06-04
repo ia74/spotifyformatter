@@ -230,7 +230,8 @@ let spotifyFormatter = {
 				console.log('found my lyric')
 				console.log(element.classList)
 				element.style.color = 'var(--lyrics-color-active)';
-				document.querySelector(spotifyFormatter.finds[mode].lyrics.scroller).parentElement.scrollTo(0, element.offsetTop - 250);
+				if (mode == 'normal') document.querySelector(spotifyFormatter.finds[mode].lyrics.scroller).parentElement.scrollTo(0, element.offsetTop - 250);
+				else document.querySelector(spotifyFormatter.finds[mode].lyrics.scroller).scrollTo(0, element.offsetTop - 250);
 			} else {
 				if (element.dataset.start < currentLyric.start) {
 					element.style.color = 'var(--lyrics-color-passed)';
